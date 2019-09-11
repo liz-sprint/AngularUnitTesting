@@ -56,4 +56,18 @@ describe('HeroesComponent (deep test)', () => {
             expect(heroComponentDEs[i].componentInstance.hero).toEqual(HEROES[i]);
         }
     });
+
+    it(`this should call heroService.deleteHero,
+        when Hero component's delte button is clicked`, () => {
+            spyOn(fixture.componentInstance, 'deleteFromParent');
+            mockHeroService.getHeroes.and.returnValue(of(HEROES));
+
+            fixture.detectChanges();
+
+            const heroComponentDEs = fixture.debugElement.queryAll(By.directive(HeroComponent));
+            heroComponentDEs[2].query(By.css('button'))
+                .triggerEventHandler('click', { stopPropagation: () => {} });
+
+            expect(fixture.componentInstance.deleteFromParent).toHaveBeenCalledWith(HEROES[2]);
+    });
 });

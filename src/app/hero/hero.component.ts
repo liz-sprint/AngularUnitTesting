@@ -8,10 +8,10 @@ import { Hero } from '../hero';
 })
 export class HeroComponent {
   @Input() hero: Hero;
-  @Output() delete = new EventEmitter();
+  @Output() deleteFromChild = new EventEmitter();
 
   onDeleteClick($event): void {
     $event.stopPropagation();
-    this.delete.next();
+    this.deleteFromChild.next();
   }
 }

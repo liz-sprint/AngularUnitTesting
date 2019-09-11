@@ -24,7 +24,7 @@ describe('HeroesComponent', () => {
             mockHeroService.deleteHero.and.returnValue(of(true)); // TO FIX --- TypeError: Cannot read property 'subscribe' of undefined
             component.heroes = HEROES;
 
-            component.delete(HEROES[2]);
+            component.deleteFromParent(HEROES[2]);
 
             // expect(component.heroes.length).toBe(2);
             expect(component.heroes).toEqual([{id: 1, name: 'SpiderWoman', strength: 8},
@@ -35,7 +35,7 @@ describe('HeroesComponent', () => {
             mockHeroService.deleteHero.and.returnValue(of(true));
             component.heroes = HEROES;
 
-            component.delete(HEROES[2]);
+            component.deleteFromParent(HEROES[2]);
 
             // expect(mockHeroService.deleteHero).toHaveBeenCalledWith(HEROES[2]);
             expect(mockHeroService.deleteHero).toHaveBeenCalledWith({id: 4, name: 'SuperWoman', strength: 18});
