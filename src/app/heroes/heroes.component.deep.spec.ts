@@ -70,4 +70,20 @@ describe('HeroesComponent (deep test)', () => {
 
             expect(fixture.componentInstance.deleteFromParent).toHaveBeenCalledWith(HEROES[2]);
     });
+
+    it(`this should call heroService.deleteHero,
+        when Hero component's delte button is clicked - 2`, () => {
+            spyOn(fixture.componentInstance, 'deleteFromParent');
+            /* Error: <toHaveBeenCalledWith> : Expected a spy, but got Function.
+                Usage: expect(<spyObj>).toHaveBeenCalledWith(...arguments) */
+            mockHeroService.getHeroes.and.returnValue(of(HEROES));
+
+            fixture.detectChanges();
+
+            const heroComponentDEs = fixture.debugElement.queryAll(By.directive(HeroComponent));
+            (<HeroComponent>heroComponentDEs[0].componentInstance).deleteFromChild.emit(undefined);
+            // HEROES[0] or undefined will also work here
+
+            expect(fixture.componentInstance.deleteFromParent).toHaveBeenCalledWith(HEROES[0]);
+    });
 });
