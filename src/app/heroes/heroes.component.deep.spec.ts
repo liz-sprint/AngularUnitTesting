@@ -58,7 +58,7 @@ describe('HeroesComponent (deep test)', () => {
     });
 
     it(`this should call heroService.deleteHero,
-        when Hero component's delte button is clicked`, () => {
+        when Hero component's delte button is clicked - events on elements`, () => {
             spyOn(fixture.componentInstance, 'deleteFromParent');
             mockHeroService.getHeroes.and.returnValue(of(HEROES));
 
@@ -72,7 +72,7 @@ describe('HeroesComponent (deep test)', () => {
     });
 
     it(`this should call heroService.deleteHero,
-        when Hero component's delte button is clicked - 2`, () => {
+        when Hero component's delte button is clicked - emmiting event`, () => {
             spyOn(fixture.componentInstance, 'deleteFromParent');
             /* Error: <toHaveBeenCalledWith> : Expected a spy, but got Function.
                 Usage: expect(<spyObj>).toHaveBeenCalledWith(...arguments) */
@@ -83,6 +83,21 @@ describe('HeroesComponent (deep test)', () => {
             const heroComponentDEs = fixture.debugElement.queryAll(By.directive(HeroComponent));
             (<HeroComponent>heroComponentDEs[0].componentInstance).deleteFromChild.emit(undefined);
             // HEROES[0] or undefined will also work here
+
+            expect(fixture.componentInstance.deleteFromParent).toHaveBeenCalledWith(HEROES[0]);
+    });
+
+    it(`this should call heroService.deleteHero,
+        when Hero component's delte button is clicked - on child directive`, () => {
+            spyOn(fixture.componentInstance, 'deleteFromParent');
+            /* Error: <toHaveBeenCalledWith> : Expected a spy, but got Function.
+                Usage: expect(<spyObj>).toHaveBeenCalledWith(...arguments) */
+            mockHeroService.getHeroes.and.returnValue(of(HEROES));
+
+            fixture.detectChanges();
+
+            const heroComponentDEs = fixture.debugElement.queryAll(By.directive(HeroComponent));
+            heroComponentDEs[0].triggerEventHandler('deleteFromChild', null);
 
             expect(fixture.componentInstance.deleteFromParent).toHaveBeenCalledWith(HEROES[0]);
     });
