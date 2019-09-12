@@ -33,7 +33,7 @@ describe(('HeroDetailComponent'), () => {
 
     it ('should renter Hero name in H2 tag', () => {
         fixture.detectChanges();
-        
+
         expect(fixture.nativeElement.querySelector('h2').textContent).toContain('WONDERWOMAN');
     });
 });
