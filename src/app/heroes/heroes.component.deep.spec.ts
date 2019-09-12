@@ -1,11 +1,26 @@
 import { HeroesComponent } from './heroes.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA, Component, Input } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Component, Input, Directive } from '@angular/core';
 import { HeroService } from '../hero.service';
 import { of } from 'rxjs';
 import { Hero } from '../hero';
 import { By } from '@angular/platform-browser';
 import { HeroComponent } from '../hero/hero.component';
+
+@Directive({
+    selector: '[routerLink]',
+    host: { '(click)' : 'onClick()' }
+})
+
+export class RouterLinkDirectiveStub {
+    @Input('routerLink') linkParams: any;
+    navigatedTo: any = null;
+
+    onClick() {
+        this.navigatedTo = this.linkParams;
+    }
+
+}
 
 describe('HeroesComponent (deep test)', () => {
     let fixture: ComponentFixture<HeroesComponent>;
@@ -25,7 +40,8 @@ describe('HeroesComponent (deep test)', () => {
         TestBed.configureTestingModule({
             declarations: [
                 HeroesComponent,
-                HeroComponent
+                HeroComponent,
+                RouterLinkDirectiveStub
             ],
             providers: [
                 {
@@ -33,7 +49,12 @@ describe('HeroesComponent (deep test)', () => {
                     useValue: mockHeroService
                 }
             ],
-            schemas: [NO_ERRORS_SCHEMA]
+            // schemas: [NO_ERRORS_SCHEMA] 
+            /** 
+             * Can't bind to 'routerLink' since it isn't a known property of 'a'. ("<a [ERROR ->]routerLink="/detail/{{hero.id}}">
+                <span class="badge">{{hero.id}}</span> {{hero.name}}
+                
+             */
         });
 
         fixture = TestBed.createComponent(HeroesComponent);
@@ -116,5 +137,19 @@ describe('HeroesComponent (deep test)', () => {
 
         const heroText = fixture.debugElement.query(By.css('ul')).nativeElement.textContent;
         expect(heroText).toContain(name);
+    });
+
+    it('should have the correct route for the first hero', ( ) => {
+        mockHeroService.getHeroes.and.returnValue(of(HEROES));
+        fixture.detectChanges();
+        const heroComponentDEs = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+        const routerLink = heroComponentDEs[0]
+            .query(By.directive(RouterLinkDirectiveStub))
+            .injector.get(RouterLinkDirectiveStub);
+
+        heroComponentDEs[0].query(By.css('a')).triggerEventHandler('click', null);
+
+        expect(routerLink.navigatedTo).toBe('/detail/1');
     });
 });
